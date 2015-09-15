@@ -58,7 +58,7 @@ That's it.
 
 Properly give credit to those giants I borrowed the code from.
 
-Oh, and tests... yeah, tests.
+Oh, and tests... yeah, definitely some tests.
 
 =head1 LICENSE
 
@@ -69,7 +69,7 @@ it under the same terms as Perl itself.
 
 =head1 AUTHOR
 
-Geraud CONTINSOUZAS E<lt>geraud@scsi.ncE<gt>
+Geraud CONTINSOUZAS E<lt>gcs@cpan.orgE<gt>
 
 =cut
 
