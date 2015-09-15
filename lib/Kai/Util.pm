@@ -51,7 +51,6 @@ sub write_file {
     close $ofh;
 }
 
-
 1;
 __END__
 
