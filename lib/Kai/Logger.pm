@@ -12,6 +12,7 @@ BEGIN {
         no strict 'refs';
         *{$method} = sub {
             local $Log::Minimal::COLOR = -t STDOUT ? 1 : 0;
+            local $Log::Minimal::DIE   = \&MYDIE;
             local $Log::Minimal::PRINT = \&MYPRINT;
             "Log::Minimal::$method"->(@_);
         };
@@ -24,6 +25,11 @@ sub MYPRINT {
 
     my $msg = $Log::Minimal::COLOR ? $message : $raw;
     printf $fh ( "%s %s\n", $time, $msg );
+}
+
+sub MYDIE {
+    my ($time, $type, $message, $trace, $raw) = @_;
+    die "$raw at $trace\n";
 }
 
 1;

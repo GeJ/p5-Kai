@@ -2,13 +2,18 @@ package Kai::CLI;
 use strict;
 use warnings;
 use utf8;
+
 use Getopt::Long;
 use Try::Tiny;
 
-our $VERSION = "v0.0.1";
-
 use Kai::Logger;
 use Kai::Util qw(load_class);
+
+use parent qw(Exporter);
+
+our $VERSION = "v0.0.1";
+
+our @EXPORT_OK = qw(errorf parse_options);
 
 sub new {
     my $proto = shift;
@@ -47,14 +52,13 @@ sub run {
     }
     else {
         my $class = try {
-            my $klass = ($cmd =~ /^\+/) 
-                ? load_class($cmd)
-                : load_class(ucfirst($cmd), ref($self));
-            return $klass;
+            load_class(ucfirst($cmd), ref($self));
         }
         catch {
             warnf "Could not find command '$cmd'";
-            critf "$_\n";
+            if (/^Can't locate @{[ref($self)]}/) {
+                critf "$_\n";
+            }
             exit 2;
         };
 
@@ -62,6 +66,7 @@ sub run {
             $class->run(@commands);
         }
         catch {
+            /Kai::CLI::Error::CommandExit/ and return;
             critf "$_\n";
             exit 1;
         }
@@ -74,6 +79,42 @@ sub help { # {{{
     my $module = $args[0] ? ( ref($self) . '::' . ucfirst $args[0] ) : ref($self);
     system ("perldoc", $module);
 } # }}}
+
+###
+# Exported function
+###
+sub errorf {
+    my @msg = @_;
+    my $MYPRINT = sub {
+        my ($time, $type, $msg) = @_;
+        print {*STDERR} "$msg";
+    };
+    local $Log::Minimal::COLOR             = 1;
+    local $Log::Minimal::ESCAPE_WHITESPACE = 0;
+    local $Log::Minimal::PRINT             = $MYPRINT;
+    Log::Minimal::critf(@msg);
+    my $fmt = shift @msg;
+    Kai::CLI::Error::CommandExit->throw(sprintf($fmt, @msg));
+}
+
+sub parse_options {
+    my ( $args, @spec ) = @_;
+    Getopt::Long::GetOptionsFromArray( $args, @spec );
+}
+
+package Kai::CLI::Error::CommandExit;
+use strict;
+use warnings;
+use Carp ();
+
+sub throw {
+    my ($class, $body) = @_;
+    my $self = bless { body => $body, message => Carp::longmess($class) }, $class;
+    die $self;
+}
+
+sub body    { shift->{body} }
+sub message { shift->{message} }
 
 1;
 __END__
