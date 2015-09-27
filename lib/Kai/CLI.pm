@@ -4,9 +4,9 @@ use warnings;
 use utf8;
 
 use Getopt::Long;
+use Log::Minimal qw();
 use Try::Tiny;
 
-use Kai::Logger;
 use Kai::Util qw(load_class);
 
 use parent qw(Exporter);
@@ -55,9 +55,9 @@ sub run {
             load_class(ucfirst($cmd), ref($self));
         }
         catch {
-            warnf "Could not find command '$cmd'";
+            _warnf("Could not find command '$cmd'");
             if (/^Can't locate @{[ref($self)]}/) {
-                critf "$_\n";
+                _critf("$_\n");
             }
             exit 2;
         };
@@ -67,7 +67,7 @@ sub run {
         }
         catch {
             /Kai::CLI::Error::CommandExit/ and return;
-            critf "$_\n";
+            _critf("$_\n");
             exit 1;
         }
     }
@@ -81,10 +81,11 @@ sub help { # {{{
 } # }}}
 
 ###
-# Exported function
+# Utility function
 ###
-sub errorf {
-    my @msg = @_;
+sub _log {
+    my ($level, @msg) = @_;
+
     my $MYPRINT = sub {
         my ($time, $type, $msg) = @_;
         print {*STDERR} "$msg";
@@ -92,15 +93,33 @@ sub errorf {
     local $Log::Minimal::COLOR             = 1;
     local $Log::Minimal::ESCAPE_WHITESPACE = 0;
     local $Log::Minimal::PRINT             = $MYPRINT;
-    Log::Minimal::critf(@msg);
+    if ('CRITICAL' eq $level) {
+        Log::Minimal::critf(@msg);
+    }
+    elsif ('WARNING' eq $level) {
+        Log::Minimal::warnf(@msg);
+    }
+
+}
+sub _critf { _log('CRITICAL', @_); }
+sub _warnf { _log('WARNING',  @_); }
+
+###
+# Exported function
+###
+sub errorf { # {{{
+    my @msg = @_;
+    _critf(@msg);
+
     my $fmt = shift @msg;
     Kai::CLI::Error::CommandExit->throw(sprintf($fmt, @msg));
-}
+} # }}}
 
-sub parse_options {
+sub parse_options { # {{{
     my ( $args, @spec ) = @_;
     Getopt::Long::GetOptionsFromArray( $args, @spec );
-}
+} # }}}
+
 
 package Kai::CLI::Error::CommandExit;
 use strict;
