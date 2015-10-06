@@ -29,7 +29,7 @@ sub MYPRINT {
 
 sub MYDIE {
     my ($time, $type, $message, $trace, $raw) = @_;
-    die "$raw at $trace\n";
+    die "$time $raw at $trace\n";
 }
 
 1;

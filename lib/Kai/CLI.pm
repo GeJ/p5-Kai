@@ -21,7 +21,7 @@ sub new {
     return bless {}, $proto;
 }
 
-sub run {
+sub run { # {{{
     my ($self, @args) = @_;
  
     local @ARGV = @args;
@@ -71,7 +71,7 @@ sub run {
             exit 1;
         }
     }
-}
+} # }}}
 
 sub help { # {{{
     my ($self, @args) = @_;
@@ -83,7 +83,7 @@ sub help { # {{{
 ###
 # Utility function
 ###
-sub _log {
+sub _log { # {{{
     my ($level, @msg) = @_;
 
     my $MYPRINT = sub {
@@ -93,6 +93,12 @@ sub _log {
     local $Log::Minimal::COLOR             = 1;
     local $Log::Minimal::ESCAPE_WHITESPACE = 0;
     local $Log::Minimal::PRINT             = $MYPRINT;
+    local $Log::Minimal::DEFAULT_COLOR
+        = +{
+            'warn' =>     { text => 'yellow', },
+            'critical' => { text => 'red', },
+        };
+
     if ('CRITICAL' eq $level) {
         Log::Minimal::critf(@msg);
     }
@@ -100,7 +106,7 @@ sub _log {
         Log::Minimal::warnf(@msg);
     }
 
-}
+} # }}}
 sub _critf { _log('CRITICAL', @_); }
 sub _warnf { _log('WARNING',  @_); }
 
@@ -121,7 +127,8 @@ sub parse_options { # {{{
 } # }}}
 
 
-package Kai::CLI::Error::CommandExit;
+package # Hide from PAUSE
+    Kai::CLI::Error::CommandExit;
 use strict;
 use warnings;
 use Carp ();
