@@ -1,4 +1,5 @@
 package Kai::CLI;
+use 5.014002;
 use strict;
 use warnings;
 use utf8;
@@ -11,7 +12,7 @@ use Kai::Util qw(load_class);
 
 use parent qw(Exporter);
 
-our $VERSION = "v0.0.1";
+our $VERSION = "0.001";
 
 our @EXPORT_OK = qw(errorf parse_options);
 
@@ -39,7 +40,7 @@ sub run { # {{{
     );
 
     if ($version) {
-        print "$VERSION\n";
+        say $VERSION;
         exit 0;
     }
  

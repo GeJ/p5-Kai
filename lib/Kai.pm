@@ -1,9 +1,9 @@
 package Kai;
-use 5.008001;
+use 5.014002;
 use strict;
 use warnings;
 
-our $VERSION = "v0.0.1";
+our $VERSION = "0.001";
 
 
 

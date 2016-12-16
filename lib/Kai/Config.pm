@@ -1,5 +1,5 @@
 package Kai::Config;
-use 5.010001;
+use 5.014002;
 use strict;
 use warnings;
 use utf8;
@@ -10,7 +10,7 @@ use File::Glob ':bsd_glob';
 use File::Spec;
 use List::MoreUtils qw(first_value);
 
-our $VERSION = "v0.0.1";
+our $VERSION = "0.001";
 
 sub config {
     my $class = shift;

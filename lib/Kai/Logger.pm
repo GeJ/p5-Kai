@@ -1,9 +1,12 @@
 package Kai::Logger;
+use 5.014002;
 use strict;
-use Exporter 'import';
-use Log::Minimal ();
+use warnings;
 
-our $VERSION = "v0.0.1";
+use Exporter 'import';
+use Log::Minimal qw();
+
+our $VERSION = "0.001";
 
 our @EXPORT = @Log::Minimal::EXPORT;
 

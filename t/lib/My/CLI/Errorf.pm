@@ -1,4 +1,4 @@
-package My::CLI::Error;
+package My::CLI::Errorf;
 use strict;
 use warnings;
 use utf8;

@@ -1,10 +1,10 @@
 package Kai::Util;
-use 5.010001;
+use 5.014002;
 use strict;
 use warnings;
 use utf8;
 
-our $VERSION = "v0.0.1";
+our $VERSION = "0.001";
 
 use File::Basename;
 use File::Path;
