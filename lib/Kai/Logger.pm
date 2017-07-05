@@ -10,13 +10,16 @@ our $VERSION = "0.001";
 
 our @EXPORT = @Log::Minimal::EXPORT;
 
+our $LOG_LEVEL = $Log::Minimal::LOG_LEVEL;
+
 BEGIN {
     foreach my $method (@Log::Minimal::EXPORT) {
         no strict 'refs';
         *{$method} = sub {
-            local $Log::Minimal::COLOR = -t STDOUT ? 1 : 0;
-            local $Log::Minimal::DIE   = \&MYDIE;
-            local $Log::Minimal::PRINT = \&MYPRINT;
+            local $Log::Minimal::COLOR     = -t STDOUT ? 1 : 0;
+            local $Log::Minimal::DIE       = \&MYDIE;
+            local $Log::Minimal::PRINT     = \&MYPRINT;
+            local $Log::Minimal::LOG_LEVEL = $LOG_LEVEL;
             "Log::Minimal::$method"->(@_);
         };
     }
