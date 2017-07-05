@@ -6,11 +6,21 @@ use utf8;
 
 our $VERSION = "0.001";
 
-use File::Basename;
-use File::Path;
+use Cwd ();
+use File::Basename ();
+use File::Path ();
 use parent qw(Exporter);
 
-our @EXPORT_OK = qw(load_class trim write_file);
+use Kai::Logger ();
+
+our @EXPORT_OK = qw(cmd load_class trim write_file);
+
+# Borrowed from Minilla::Util
+sub cmd {
+    Kai::Logger::infof("[%s] \$ %s\n", File::Basename::basename(Cwd::getcwd()), "@_");
+    system(@_) == 0
+        or Kai::Logger::croakf("Giving up.\n");
+}
 
 # Borrowed from Plack::Util
 sub load_class {
@@ -42,7 +52,7 @@ sub write_file {
     Carp::croak("filename should not be a reference") if ref $filename;
     $input_mode ||= '>:encoding(utf-8)';
 
-    my $dirname = dirname($filename);
+    my $dirname = File::Basename::dirname($filename);
     File::Path::make_path($dirname, {mode => 0755}) if $dirname;
 
     open my $ofh, $input_mode, $filename
@@ -66,7 +76,7 @@ This document describes Kai::Util version v0.0.1
 
 =head1 SYNOPSIS
 
-    use Kai::Util qw(load_class trim write_file);
+    use Kai::Util qw(cmd load_class trim write_file);
 
 =head1 DESCRIPTION
 
