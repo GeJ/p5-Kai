@@ -5,7 +5,7 @@ use warnings;
 use utf8;
 
 use Getopt::Long;
-use Log::Minimal qw();
+use Log::Minimal ();
 use Try::Tiny;
 
 use Kai::Util qw(load_class);
